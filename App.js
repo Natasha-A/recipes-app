@@ -4,12 +4,14 @@ import { Provider } from 'react-redux';
 
 import store from './app/store'
 
+import { RecipesList } from './features/recipes/RecipesList'
+
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Provider store={store}>
-        <Text>Test</Text>
+        <RecipesList/>
       </Provider>
     </View>
   );
