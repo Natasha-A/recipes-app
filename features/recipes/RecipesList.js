@@ -15,14 +15,19 @@ export const RecipeChild = () => {
             style={{ width: 200, height: 200 }}
             source={{ uri: `${recipe.image}` }}
           />
-          <Text>{recipe.description}</Text>
-
-          {
+          <Text>{`${recipe.description.substring(0,200)}...`}</Text>
+          <Text>Ingredients:</Text>
+           {
             recipe.ingredients.map((ingredient,index) => (
               <Text>{index+1}. {ingredient.raw_text}</Text>
             ))
           }
-
+          {/* <Text>Steps:</Text>
+          {
+            recipe.instructions.map((text) => (
+              <Text>{text.position}. {text.display_text}</Text>
+            ))
+          }  */}
         </View>
       ))}
     </View>
@@ -30,22 +35,6 @@ export const RecipeChild = () => {
 };
 
 export const RecipesList = () => {
-  // const renderedRecipes = recipes.map(recipe =>
-  //   <View>
-  //     <Text>{recipe.title}</Text>
-  //     <Text>{recipe.time}</Text>
-  //     <Text>{recipe.servings}</Text>
-  //   <Image
-  //     style={{width: 200, height: 200}}
-  //     source={{uri: `${recipe.image}`,}}/>
-  //     <Text>{recipe.description}</Text>
-
-  //     {recipe.ingredients.map(ingredient => {
-  //       <Text>{ingredient}</Text>
-  //     })}
-  //   </View>
-  // )
-
   return (
     <View className="recipes-list">
       <Text>Recipes</Text>

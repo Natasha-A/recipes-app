@@ -64,10 +64,22 @@ const initialState = [
 ];
 
 const recipeSlice = createSlice({
+   // initalize reducer with initial state 
   name: 'recipes',
   initialState,
-  // initalize reducer with initial state 
-  reducers:{}
+  // reducer function to handle posts added 
+  // retrieves the current state value and the action object that will be dispatched 
+  // state - array of post
+  // action - posts entry 
+  // action.payload - new post object into state array
+  reducers:{
+    recipeAdded(state, action) {
+      state.push(action.payload)
+    }
+  }
 })
+
+
+export const { recipeAdded } = recipeSlice.actions;
 
 export default recipeSlice.reducer;
