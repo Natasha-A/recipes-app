@@ -67,19 +67,33 @@ const recipeSlice = createSlice({
    // initalize reducer with initial state 
   name: 'recipes',
   initialState,
-  // reducer function to handle posts added 
+  // reducer function to handle recipe added 
   // retrieves the current state value and the action object that will be dispatched 
   // state - array of post
-  // action - posts entry 
+  // action - recipe entry 
   // action.payload - new post object into state array
   reducers:{
     recipeAdded(state, action) {
       state.push(action.payload)
+    },
+    recipedUpdated(state, action) {
+      const {id, title, time, servings, image, description, ingredients, instructions} = action.payload
+      const existingRecipe = state.find(recipe => recipe.id === id) // check if recipe exists, update with new values 
+      if (existingRecipe) {
+        existingRecipe.title = title 
+        existingRecipe.time = time 
+        existingRecipe.servings = servings
+        existingRecipe.image = image
+        existingRecipe.description = description
+        existingRecipe.ingredients = ingredients
+        existingRecipe.instructions = instructions
+      }
+
     }
   }
 })
 
 
-export const { recipeAdded } = recipeSlice.actions;
+export const { recipeAdded, recipedUpdated } = recipeSlice.actions;
 
 export default recipeSlice.reducer;
