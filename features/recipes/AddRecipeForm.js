@@ -16,14 +16,15 @@ export const AddRecipeForm = () => {
   const [description, setDescription] = useState(
     "This is a recipe description."
   );
-  const [ingredient, setIngredient] = useState(''); // array?
-  const [ingredients, setIngredients] = useState([]);
-  const [steps, setSteps] = useState(); // array?
+  const [ingredient, setIngredient] = useState(''); // store individual ingredient
+  const [ingredients, setIngredients] = useState([]); // store all ingredients as array 
+
+  const [instruction, setInstruction] = useState('')
+  const [instructions, setInstructions] = useState([]); 
 
   const onTitleChanged = (e) => setTitle(e.target.value);
   const onTimeChanged = (e) => setTime(e.target.value);
   const onServingsChanged = (e) => setServings(e.target.value);
-  const onImageChanged = (e) => setImage(e.target.value);
   const onDescriptionChanged = (e) => setDescription(e.target.value);
 
   // update ingredient form value 
@@ -40,7 +41,18 @@ export const AddRecipeForm = () => {
     setIngredient('')
   }
 
-  //const onStepsChanged = (e) => setSteps(e.target.value);
+  const onSubmitInstruction = function(e) {
+    e.preventDefault();
+
+    const instructionObj = {display_text: instruction}
+
+    setInstructions(instructions.concat(instructionObj))
+
+    console.log(instructions)
+    setInstruction('')
+  }
+
+  const onInstructionChanged = (e) => setInstruction(e.target.value);
 
   const onSaveRecipeClicked = () => {
       dispatch(
@@ -52,7 +64,7 @@ export const AddRecipeForm = () => {
           image,
           description,
           ingredients,
-          //steps
+          instructions
         })
       )
       setTitle('');
@@ -60,12 +72,13 @@ export const AddRecipeForm = () => {
       setServings('');
       setDescription('');
       setIngredients([]);
-      setSteps('');
+      setInstructions([]);
   }
+
   return (
     <section>
       <form>
-        <h2>Add a New Post</h2>
+        <h2>Add a New Recipe</h2>
         <label htmlFor="recipeTitle">Recipe Title:</label>
         <input
           type="text"
@@ -98,7 +111,7 @@ export const AddRecipeForm = () => {
           onChange={onDescriptionChanged}
         ></input>
 
-        <label htmlFor="ingredientsInfo">Ingredient:</label>
+        <label htmlFor="ingredientsInfo">Add Ingredient:</label>
         <input
           type="text"
           id="ingredientsInfo"
@@ -107,13 +120,17 @@ export const AddRecipeForm = () => {
         ></input>
         <button type="button" onClick={onSubmitIngredient}>Add ingredient</button>
 
-      {/* <label htmlFor="stepsInfo">Steps:</label>
-      <input
-        type="text"
-        id="stepsInfo"
-        value={steps}
-        onChange={onStepsChanged}
-      ></input> */}
+        <label htmlFor="stepsInfo">Add Step:</label>
+        <input 
+          type="text"
+          id="stepsInfo"
+          value={instruction}
+          onChange={onInstructionChanged}
+          >
+        </input>
+        <button type="button" onClick={onSubmitInstruction}>Add Step</button>
+
+   
         <button type="button" onClick={onSaveRecipeClicked}>Save Post</button>
       </form>
     </section>

@@ -8,13 +8,13 @@ import { withNavigation } from "react-navigation";
 
 
 
-const RecipeChild = ( {navigation} ) => {
+const RecipeChildren = (navigation) => {
   const recipes = useSelector((state) => state.recipes);
   return (
     <View>
       {recipes.map((recipe) => (
-        <View>
-          {/* <Button title="View Post" onPress={() => navigation.navigate('ViewPost', {recipeId : `${recipe.id}`})}/> */}
+        <View style={{borderWidth: 1, margin: 10}}>
+          {/*<Button title="View Post" onPress={() => navigation.navigate('ViewPost', {recipeId : `${recipe.id}`})}/>*/}
           <Text>{recipe.title}</Text>
           <Text>{recipe.time}</Text>
           <Text>{recipe.servings}</Text>
@@ -23,31 +23,21 @@ const RecipeChild = ( {navigation} ) => {
             source={{ uri: `${recipe.image}` }}
           />
           <Text>{`${recipe.description.substring(0,200)}...`}</Text>
-          <Text>Ingredients:</Text>
-           {
-            recipe.ingredients.map((ingredient,index) => (
-              <Text>{index+1}. {ingredient.raw_text}</Text>
-            ))
-          }
-          {/* <Text>Steps:</Text>
-          {
-            recipe.instructions.map((text) => (
-              <Text>{text.position}. {text.display_text}</Text>
-            ))
-          }  */}
+
+          <Button title="View Recipe" onPress={() => navigation.navigate('SingleRecipePage', {recipeId:recipe.id})}></Button>
         </View>
       ))}
     </View>
   );
 };
 
-export const RecipesList = () => {
+export const RecipesList = ({ navigation }) => {
   return (
     <View className="recipes-list">
-      <Text>Recipes</Text>
-      <RecipeChild />
+        <Button title="Add Recipe" onPress={() => navigation.navigate('AddRecipe')}/>
+        {RecipeChildren(navigation)}
     </View>
   );
 };
 
-export default withNavigation(RecipesList)
+export default RecipesList
