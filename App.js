@@ -8,6 +8,7 @@ import store from './app/store'
 import { AddRecipeForm } from './features/recipes/AddRecipeForm';
 import { RecipesList } from './features/recipes/RecipesList'
 import { SingleRecipePage } from './features/recipes/SingleRecipePage';
+import { EditRecipeForm } from './features/recipes/EditRecipeForm';
 
 const Stack  = createStackNavigator();
 
@@ -35,6 +36,13 @@ export default function App() {
             component={SingleRecipePage}
             options={
               {title: "View Recipe"}
+            }
+          />
+          <Stack.Screen
+            name="EditRecipe"
+            component={EditRecipeForm}
+            options={
+              {title: "Edit Recipe"}
             }
           />
         </Stack.Navigator>

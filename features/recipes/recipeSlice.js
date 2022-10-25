@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = [
   {
     id: "1",
-    title: "Homemade Ramem",
+    title: "Homemade Ramen",
     time: "25 minutes",
     servings: "6 people",
     image: "https://www.forkknifeswoon.com/wp-content/uploads/2014/10/simple-homemade-chicken-ramen-fork-knife-swoon-01.jpg",
@@ -78,7 +78,7 @@ const recipeSlice = createSlice({
     },
     recipedUpdated(state, action) {
       const {id, title, time, servings, image, description, ingredients, instructions} = action.payload
-      const existingRecipe = state.find(recipe => recipe.id === id) // check if recipe exists, update with new values 
+      const existingRecipe = state.find(recipe => recipe.id === id) // check if recipe exists, update with new value
       if (existingRecipe) {
         existingRecipe.title = title 
         existingRecipe.time = time 

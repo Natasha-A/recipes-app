@@ -6,15 +6,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { withNavigation } from "react-navigation";
 
-
-
 const RecipeChildren = (navigation) => {
   const recipes = useSelector((state) => state.recipes);
   return (
     <View>
       {recipes.map((recipe) => (
         <View style={{borderWidth: 1, margin: 10}}>
-          {/*<Button title="View Post" onPress={() => navigation.navigate('ViewPost', {recipeId : `${recipe.id}`})}/>*/}
           <Text>{recipe.title}</Text>
           <Text>{recipe.time}</Text>
           <Text>{recipe.servings}</Text>

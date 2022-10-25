@@ -1,8 +1,9 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import {Text, View, Button} from 'react-native'
 
 
-export const SingleRecipePage = ({ route }) => {
+export const SingleRecipePage = ({ navigation, route }) => {
   const { recipeId } = route.params; // route.params
 
   // check if IDs match and returns the value
@@ -13,29 +14,32 @@ export const SingleRecipePage = ({ route }) => {
   if (!recipe) {
     return (
       <section>
-        <h2>Post not found!</h2>
+        <h2>Recipe not found!</h2>
       </section>
     );
   }
 
   return (
-    <section>
-      <article className="post">
-        <h2>{recipe.title}</h2>
-        <p className="post-content">{recipe.description}</p>
-        <p>Ingredients:</p>
+    <View>
+      <View className="post">
+        <Text>{recipe.title}</Text>
+        <Text>{recipe.time}</Text>
+        <Text>{recipe.servings}</Text>
+        <Text className="post-content">{recipe.description}</Text>
+        <Text>Ingredients:</Text>
            {
             recipe.ingredients.map((ingredient,index) => (
-              <p>{index+1}. {ingredient.raw_text}</p>
+              <Text>{index+1}. {ingredient.raw_text}</Text>
             ))
         }
-        <p>Steps:</p>        
+        <Text>Steps:</Text>        
         {
           recipe.instructions.map((instruction, index) => (
-            <p>{index+1}. {instruction.display_text}</p>
+            <Text>{index+1}. {instruction.display_text}</Text>
           ))
         }
-      </article>
-    </section>
+      </View>
+      <Button title="Edit Recipe"  onPress={() => navigation.navigate('EditRecipe', {recipeId: recipe.id})}/>
+    </View>
   );
 };

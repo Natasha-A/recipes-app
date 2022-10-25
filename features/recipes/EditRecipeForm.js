@@ -1,35 +1,36 @@
 import React, { useState } from "react";
-import { recipeAdded } from "./recipeSlice";
-import { nanoid } from '@reduxjs/toolkit';
-import  { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
+import { View, Image, FlatList, Text, Button} from "react-native";
 
-export const AddRecipeForm = () => {
+import { recipedUpdated } from "./recipeSlice";
+
+export const EditRecipeForm = ({ navigation, route }) => {
+  const { recipeId } = route.params;
+
+  const recipe = useSelector((state) =>
+    state.recipes.find((recipe) => recipe.id === recipeId)
+  );
+
+  const [title, setTitle] = useState(recipe.title);
+  const [time, setTime] = useState(recipe.time);
+  const [servings, setServings] = useState(recipe.servings);
+  const [description, setDescription] = useState(recipe.description);
+
+  const [ingredient, setIngredient] = useState('')
+  const [ingredients, setIngredients] = useState(recipe.ingredients);
+
+  const [instruction, setInstruction] = useState('')
+  const [instructions, setInstructions] = useState(recipe.instructions);
 
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState("");
-  const [time, setTime] = useState("1 hour");
-  const [servings, setServings] = useState("4 people");
-  const [image, setImage] = useState(
-    "https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI="
-  );
-  const [description, setDescription] = useState(
-    "Write your recipe description here."
-  );
-  const [ingredient, setIngredient] = useState(''); // store individual ingredient
-  const [ingredients, setIngredients] = useState([]); // store all ingredients as array 
-
-  const [instruction, setInstruction] = useState('')
-  const [instructions, setInstructions] = useState([]); 
-
   const onTitleChanged = (e) => setTitle(e.target.value);
   const onTimeChanged = (e) => setTime(e.target.value);
-  const onServingsChanged = (e) => setServings(e.target.value);
   const onDescriptionChanged = (e) => setDescription(e.target.value);
-
-  // update ingredient form value 
+  const onServingsChanged = (e) => setServings(e.target.value);
   const onIngredientChanged = (e) => setIngredient(e.target.value);
-    
+  const onInstructionChanged = (e) => setInstruction(e.target.value);
+
   const onSubmitIngredient = function(e) {
     e.preventDefault();
 
@@ -52,33 +53,25 @@ export const AddRecipeForm = () => {
     setInstruction('')
   }
 
-  const onInstructionChanged = (e) => setInstruction(e.target.value);
-
   const onSaveRecipeClicked = () => {
-      dispatch(
-        recipeAdded({
-          id:nanoid(),
-          title, 
-          time, 
-          servings, 
-          image,
-          description,
-          ingredients,
-          instructions
-        })
-      )
-      setTitle('');
-      setTime('');
-      setServings('');
-      setDescription('');
-      setIngredients([]);
-      setInstructions([]);
-  }
+    dispatch(
+      recipedUpdated({
+        id: recipeId,
+        title,
+        time,
+        servings,
+        description,
+        ingredients,
+        instructions,
+      })
+    );
+    navigation.goBack();
+  };
 
   return (
-    <section>
+    <View>
       <form>
-        <h2>Add a New Recipe</h2>
+        <h2>Edit Recipe</h2>
         <label htmlFor="recipeTitle">Recipe Title:</label>
         <input
           type="text"
@@ -118,38 +111,40 @@ export const AddRecipeForm = () => {
           value={ingredient}
           onChange={onIngredientChanged}
         ></input>
-        <button type="button" onClick={onSubmitIngredient}>Add ingredient</button>
+        <button type="button" onClick={onSubmitIngredient}>
+          Add ingredient
+        </button>
 
         <label htmlFor="stepsInfo">Add Step:</label>
-        <input 
+        <input
           type="text"
           id="stepsInfo"
           value={instruction}
           onChange={onInstructionChanged}
-          >
-        </input>
-        <button type="button" onClick={onSubmitInstruction}>Add Step</button>
-
-   
-        <button type="button" onClick={onSaveRecipeClicked}>Save Post</button>
+        ></input>
+        <button type="button" onClick={onSubmitInstruction}>
+          Add Step
+        </button>
+        <Button title="Save Recipe" onPress={onSaveRecipeClicked}/>
       </form>
+      
       <h3>Ingredients</h3>
       <ul>
         {
-          ingredients.map((ingred) => (
-            <li>{ingred.raw_text}</li>
-          ))  
+          ingredients.map(ingredient => (
+            <li>{ingredient.raw_text}</li>
+          ))
         }
       </ul>
+
       <h3>Instructions</h3>
-      <ol>
-        {
-          instructions.map((instruction) => (
-            <li>{instruction.display_text}</li>
-          ))  
-        }
-      </ol>
-      
-    </section>
+      <ul>
+      {
+        instructions.map(instructions => (
+          <li>{instructions.display_text}</li>
+        ))
+      }
+      </ul>
+    </View>
   );
 };
