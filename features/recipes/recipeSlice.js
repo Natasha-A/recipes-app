@@ -88,12 +88,19 @@ const recipeSlice = createSlice({
         existingRecipe.ingredients = ingredients
         existingRecipe.instructions = instructions
       }
-
+    },
+    recipeDeleted(state, action) {
+      const recipeId = action.payload 
+      state.map((recipe, index) => {
+        if (recipe.id == recipeId) {
+          state.splice(index, 1)
+        }
+      })
     }
   }
 })
 
 
-export const { recipeAdded, recipedUpdated } = recipeSlice.actions;
+export const { recipeAdded, recipedUpdated, recipeDeleted } = recipeSlice.actions;
 
 export default recipeSlice.reducer;
