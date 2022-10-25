@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Image, FlatList, Text, Button} from "react-native";
 
-import { recipedUpdated } from "./recipeSlice";
+import { recipedUpdated, recipeDeleted } from "./recipeSlice";
 
 export const EditRecipeForm = ({ navigation, route }) => {
   const { recipeId } = route.params;
@@ -63,14 +63,23 @@ export const EditRecipeForm = ({ navigation, route }) => {
         description,
         ingredients,
         instructions,
-      })
-    );
-    navigation.goBack();
+      }) 
+    )
+    setTitle('');
+    setTime('');
+    setServings('');
+    setDescription('');
+    setIngredients([]);
+    setInstructions([]);
+    navigation.navigate('Home');
   };
 
   return (
     <View>
-      <form>
+     {
+     recipeId ? 
+     <View>
+     <form> 
         <h2>Edit Recipe</h2>
         <label htmlFor="recipeTitle">Recipe Title:</label>
         <input
@@ -145,6 +154,8 @@ export const EditRecipeForm = ({ navigation, route }) => {
         ))
       }
       </ul>
+      </View> : <View><Text>Recipe not found</Text></View>
+    }
     </View>
-  );
-};
+  )
+}
