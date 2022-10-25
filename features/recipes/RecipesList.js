@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { withNavigation } from "react-navigation";
 import { recipeDeleted } from "./recipeSlice";
 
+
 const RecipeChildren = (navigation) => {
   const recipes = useSelector((state) => state.recipes);
   const dispatch = useDispatch();
@@ -16,7 +17,6 @@ const RecipeChildren = (navigation) => {
     dispatch(
       recipeDeleted(recipeId)
     )
-    navigation.navigate('Home')
   }
   return (
     <View>
