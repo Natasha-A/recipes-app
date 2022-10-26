@@ -6,7 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { withNavigation } from "react-navigation";
 import { recipeDeleted } from "./recipeSlice";
-
+import RecipeApi from '../../api/RecipesApi'
+ 
 
 const RecipeChildren = (navigation) => {
   const recipes = useSelector((state) => state.recipes);
@@ -42,6 +43,7 @@ const RecipeChildren = (navigation) => {
 export const RecipesList = ({ navigation }) => {
   return (
     <View className="recipes-list">
+        <RecipeApi/>
         <Button title="Add Recipe" onPress={() => navigation.navigate('AddRecipe')}/>
         {RecipeChildren(navigation)}
     </View>
