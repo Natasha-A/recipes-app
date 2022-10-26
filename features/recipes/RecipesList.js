@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { View, Image, FlatList, Text, Button} from "react-native";
 import { Link } from '@react-navigation/native'
@@ -6,19 +6,49 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { withNavigation } from "react-navigation";
 import { recipeDeleted } from "./recipeSlice";
-import RecipeApi from '../../api/RecipesApi'
- 
+import { selectAllRecipes, fetchRecipes } from "./recipeSlice";
+
+
+
+const RecipeExcerpt = ({recipe}) => {
+  return(
+    <View>
+      <View>
+        <Text>{recipe.title}</Text>
+        <Text>{recipe.content.substring(0, 100)}</Text>
+       <Button title="View Recipe" onPress={() => navigation.navigate('SingleRecipePage', {recipeId:recipe.id})}></Button>
+          <Button title="Delete Recipe" onPress={() => onDeleteRecipeClicked(recipe.id)}></Button>
+      </View>
+    </View>
+  )
+}
 
 const RecipeChildren = (navigation) => {
-  const recipes = useSelector((state) => state.recipes);
+  const recipes = useSelector(selectAllRecipes)
   const dispatch = useDispatch();
 
+  const recipeStatus = useSelector(state => state.recipes.status)
+  const error = useSelector(state => state.recipes.error)
 
+
+  useEffect(() => {
+    if (recipeStatus === 'idle') {
+      dispatch(fetchRecipes())
+    }
+  }, [recipeStatus, dispatch])
+
+  
   const onDeleteRecipeClicked = (recipeId) => {
     dispatch(
       recipeDeleted(recipeId)
     )
   }
+
+
+  
+  //let content 
+  //content = <RecipeExcerpt key={recipe.id} recipe={recipe}/>
+  
   return (
     <View>
       {recipes.map((recipe) => (
@@ -30,7 +60,7 @@ const RecipeChildren = (navigation) => {
             style={{ width: 200, height: 200 }}
             source={{ uri: `${recipe.image}` }}
           />
-          <Text>{`${recipe.description.substring(0,200)}...`}</Text>
+          <Text>{`${recipe.description}`}</Text>
 
           <Button title="View Recipe" onPress={() => navigation.navigate('SingleRecipePage', {recipeId:recipe.id})}></Button>
           <Button title="Delete Recipe" onPress={() => onDeleteRecipeClicked(recipe.id)}></Button>
@@ -43,7 +73,6 @@ const RecipeChildren = (navigation) => {
 export const RecipesList = ({ navigation }) => {
   return (
     <View className="recipes-list">
-        <RecipeApi/>
         <Button title="Add Recipe" onPress={() => navigation.navigate('AddRecipe')}/>
         {RecipeChildren(navigation)}
     </View>

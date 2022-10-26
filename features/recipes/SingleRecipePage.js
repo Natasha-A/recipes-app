@@ -1,15 +1,13 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import {Text, View, Button} from 'react-native'
-
+import { selectRecipeById } from "./recipeSlice";
 
 export const SingleRecipePage = ({ navigation, route }) => {
   const { recipeId } = route.params; // route.params
 
   // check if IDs match and returns the value
-  const recipe = useSelector((state) =>
-    state.recipes.find((recipe) => recipe.id === recipeId)
-  );
+  const recipe = useSelector(state => selectRecipeById(state, recipeId));
 
   if (!recipe) {
     return (

@@ -3,13 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { View, Image, FlatList, Text, Button} from "react-native";
 
 import { recipedUpdated, recipeDeleted } from "./recipeSlice";
+import { selectRecipeById } from "./recipeSlice";
 
 export const EditRecipeForm = ({ navigation, route }) => {
   const { recipeId } = route.params;
 
-  const recipe = useSelector((state) =>
-    state.recipes.find((recipe) => recipe.id === recipeId)
-  );
+  const recipe = useSelector(state => selectRecipeById(state, recipeId));
 
   const [title, setTitle] = useState(recipe.title);
   const [time, setTime] = useState(recipe.time);

@@ -9,6 +9,7 @@ import { AddRecipeForm } from './features/recipes/AddRecipeForm';
 import { RecipesList } from './features/recipes/RecipesList'
 import { SingleRecipePage } from './features/recipes/SingleRecipePage';
 import { EditRecipeForm } from './features/recipes/EditRecipeForm';
+import { composeWithDevTools } from "redux-devtools-extension";
 
 const Stack  = createStackNavigator();
 

@@ -1,67 +1,71 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid, createAsyncThunk } from "@reduxjs/toolkit";
+import RecipeApi from "../../api/RecipesApi";
 
-const initialState = [
-  {
-    id: "1",
-    title: "Homemade Ramen",
-    time: "25 minutes",
-    servings: "6 people",
-    image: "https://www.forkknifeswoon.com/wp-content/uploads/2014/10/simple-homemade-chicken-ramen-fork-knife-swoon-01.jpg",
-    description:
-      "Fresh vegetables? Quick and easy homemade broth? A soft-boiled egg and a pile of our favorite curly-cue packaged ramen noodles that remind us of college? That’s this homemade ramen. At the end of the day, a deep bowl of bright veggies + flavorful broth + golden panko crumbs + soft-boiled egg + chewy, tangled noodles is not going to let you down",
-    ingredients: [
-      {
-        raw_text: "1 tablespoon sesame oil"
-      }, 
-      {
-        raw_text: "3 teaspoon grated ginger"
-      },
-      {
-        raw_text: "4 teaspoons grated garlic"
-      },
-      {
-        raw_text: "4 cups chicken broth"
-      },
-      {
-      raw_text: "4 cups water",
-      },
-      {
-        raw_text: "4 cups water"
-      },
-      {
-      raw_text:"2 packets instant ramen"
-      },
-      {
-        raw_text:"1/2 cup chopped kale"
-      }, 
-      {
-        raw_text:"1 cup shredded carrots"
-      }
-    ],
-    instructions: [
-      {
-        position: 1,
-        display_text:
-          "Heat the sesame oil in a large skillet over medium low heat. Add the garlic and ginger; stir fry for 2 minutes or until soft and fragrant.",
-      },
-      {
-        position: 2,
-        display_text:
-          "Add the broth and the water. Bring to a simmer; add the mushrooms and simmer for 10 minutes or until the mushrooms have softened and the broth is flavorful.",
-      },
-      {
-        position: 3,
-        display_text:
-          "Add the instant noodles to the hot liquid and simmer for an additional 5 minutes or until the noodles have softened. Add the scallions and stir to combine.",
-      },
-      {
-        position: 4,
-        display_text:
-          "Remove from heat, stir in the kale and carrots, and top with crunchy panko crumbs (see notes) and a soft-boiled egg (optional). Season with chili oil, hot sauce, sesame oil, and/or soy sauce and salt to taste.",
-      },
-    ],
-  },
-];
+const initialState = {
+  recipes: [],
+  status: 'idle',
+  error: null
+}
+
+export const fetchRecipes = createAsyncThunk('recipes/fetchRecipes', async () => {
+  const response = await fetch('https://www.themealdb.com/api/json/v2/9973533/randomselection.php')
+  const json = await response.json()
+  return createRecipesArray(json.meals)
+})
+
+function createRecipesArray(fetchedRecipes) {
+  let recipeObjects = []
+  fetchedRecipes.map((recipe, index) => {
+
+   let stringCategory = recipe.strCategory
+   let stringImage = recipe.strMealThumb || 'https://media.istockphoto.com/photos/table-top-view-of-spicy-food-picture-id1316145932?b=1&k=20&m=1316145932&s=170667a&w=0&h=feyrNSTglzksHoEDSsnrG47UoY_XX4PtayUPpSMunQI='
+   let stringTitle = recipe.strMeal
+   let stringCusinine = recipe.strArea
+
+   let instructionsEntry = recipe.strInstructions
+   let stringInstructions = instructionsEntry.replace(/(?:\r\n|\r\n|\r|\n)/g, 'LB')
+ 
+   // Sanitize and format ingredients array
+   let ingredientEntry = recipe
+   let measureEntry = recipe
+
+   let cleanedIngredientsArray = []
+   for (let i=1; i < 15; i++) {
+     let string = ""
+
+     if (ingredientEntry["strIngredient" + i]) {
+       string = measureEntry["strMeasure" + i] + " " + ingredientEntry["strIngredient" + i]
+       cleanedIngredientsArray.push({raw_text:string})
+     }
+   }
+   
+   // Sanitize and format instructions array 
+   let cleanedInstructions = stringInstructions.replaceAll("\"", "")
+   let seperatedInstructionsArray = cleanedInstructions.split("LB")
+   let cleanInstructionsArray = []
+
+   seperatedInstructionsArray.map((instruction) => {
+     let item = {display_text : instruction}
+     cleanInstructionsArray.push(item)
+   })
+
+   // Format and create cleaned recipe object 
+   let recipeObject = {
+     id: nanoid(),
+     title: stringTitle,
+     time: "1 hour",
+     servings: "4 people",
+     image: stringImage,
+     description: `Category: ${stringCategory} | Cuisine: ${stringCusinine}`,
+     ingredients: cleanedIngredientsArray,
+     instructions: cleanInstructionsArray
+   }
+   recipeObjects.push(recipeObject)
+ }) 
+ console.table(recipeObjects)
+ return recipeObjects
+}
+
 
 const recipeSlice = createSlice({
    // initalize reducer with initial state 
@@ -74,11 +78,11 @@ const recipeSlice = createSlice({
   // action.payload - new post object into state array
   reducers:{
     recipeAdded(state, action) {
-      state.push(action.payload)
+      state.recipes.push(action.payload)
     },
     recipedUpdated(state, action) {
       const {id, title, time, servings, image, description, ingredients, instructions} = action.payload
-      const existingRecipe = state.find(recipe => recipe.id === id) // check if recipe exists, update with new value
+      const existingRecipe = state.recipes.find(recipe => recipe.id === id) // check if recipe exists, update with new value
       if (existingRecipe) {
         existingRecipe.title = title 
         existingRecipe.time = time 
@@ -91,18 +95,37 @@ const recipeSlice = createSlice({
     },
     recipeDeleted(state, action) {
       const recipeId = action.payload 
-      state.map((recipe, index) => {
+      state.recipes.map((recipe, index) => { 
         if (recipe.id == recipeId) {
-          state.splice(index, 1)
+          state.recipes.splice(index, 1) 
         }
       })
     }
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchRecipes.pending, (state, action) => {
+        state.status = 'loading'
+      })
+      .addCase(fetchRecipes.fulfilled, (state, action) => {
+        state.status = 'succeeded'
+        // Add any fetched recipes to the array
+        state.recipes = state.recipes.concat(action.payload)
+        console.table("table: " + action.payload)
+      })
+      .addCase(fetchRecipes.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
   }
 })
 
 
+
 export const { recipeAdded, recipedUpdated, recipeDeleted } = recipeSlice.actions;
 
+export const selectAllRecipes = state => state.recipes.recipes
+export const selectRecipeById = (state, recipeId) => state.recipes.recipes.find(recipe => recipe.id === recipeId)
 
 
 export default recipeSlice.reducer;

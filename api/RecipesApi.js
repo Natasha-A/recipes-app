@@ -3,30 +3,25 @@ import { Text, View, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import { nanoid } from '@reduxjs/toolkit';
 
-const RecipeApi = () => {
+function RecipeApi() {
   const [data, setData] = useState([]);
   let recipes = []
 
-  function fetchData() {
-    fetch('https://www.themealdb.com/api/json/v2/9973533/randomselection.php')
-    .then((response) => response.json())
-    .then((json) => {
-      setData(Object.entries(json.meals)) 
-    })
-    .catch((error) => console.error(error))
-  }
-
-   useEffect(() => {
-        fetchData()
-  }, [])
-
+  // function fetchData() {
+  //   fetch('https://www.themealdb.com/api/json/v2/9973533/randomselection.php')
+  //   .then((response) => response.json())
+  //   .then((json) => {
+  //     setData(Object.entries(json.meals)) 
+  //   })
+  //   .catch((error) => console.error(error))
+  // }
 
   console.log(data)
   createRecipesArray(data)
 
 
 function createRecipesArray(recipeArray) {
-   let cleanedRecipeArray = recipeArray.map((recipe, index) => {
+   recipeArray.map((recipe, index) => {
 
     let stringCategory = recipe[1].strCategory
     let stringImage = recipe[1].strMealThumb
@@ -77,21 +72,8 @@ function createRecipesArray(recipeArray) {
 
 console.table(recipes)
 
-  return (
-    <View style={styles.container}>
-        <Text>{JSON.stringify(recipes)}</Text>
-    </View>
-  );
+  return (JSON.stringify(recipes));
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#ecf0f1',
-    padding: 8,
-  }
-});
 
-export default RecipeApi
+export default RecipeApi;
