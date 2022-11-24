@@ -78,7 +78,7 @@ const recipeSlice = createSlice({
   // action.payload - new post object into state array
   reducers:{
     recipeAdded(state, action) {
-      state.recipes.push(action.payload)
+      state.recipes.unshift(action.payload)
     },
     recipedUpdated(state, action) {
       const {id, title, time, servings, image, description, ingredients, instructions} = action.payload

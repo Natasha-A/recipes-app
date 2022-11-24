@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { recipeAdded } from "./recipeSlice";
 import { nanoid } from '@reduxjs/toolkit';
 import  { useDispatch } from 'react-redux'
+import {Text, StyleSheet, View, TextInput, Button} from 'react-native';
+
 
 export const AddRecipeForm = () => {
 
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Recipe Name");
   const [time, setTime] = useState("1 hour");
   const [servings, setServings] = useState("4 people");
   const [image, setImage] = useState(
@@ -76,64 +78,69 @@ export const AddRecipeForm = () => {
   }
 
   return (
-    <section>
-      <form>
-        <h2>Add a New Recipe</h2>
-        <label htmlFor="recipeTitle">Recipe Title:</label>
-        <input
+    <View>
+      <View style={styles.container}>
+        <Text style={styles.headerText}>Add a New Recipe</Text>
+        <Text htmlFor="recipeTitle" style={styles.title}>Recipe Title:</Text>
+        <TextInput 
           type="text"
           id="recipeTitle"
           value={title}
           onChange={onTitleChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="timeInfo">Time:</label>
-        <input
+        <Text htmlFor="timeInfo" style={styles.title}>Time:</Text>
+        <TextInput
           type="text"
           id="timeInfo"
           value={time}
           onChange={onTimeChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="servingsInfo">Servings:</label>
-        <input
+        <Text htmlFor="servingsInfo" style={styles.title}>Servings:</Text>
+        <TextInput
           type="text"
           id="servingsInfo"
           value={servings}
           onChange={onServingsChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="descriptionInfo">Description:</label>
-        <input
+        <Text htmlFor="descriptionInfo" style={styles.title}>Description:</Text>
+        <TextInput
           type="text"
           id="descriptionInfo"
           value={description}
           onChange={onDescriptionChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="ingredientsInfo">Add Ingredient:</label>
-        <input
+        <Text htmlFor="ingredientsInfo" style={styles.title}>Add Ingredient:</Text>
+        <TextInput
           type="text"
           id="ingredientsInfo"
           value={ingredient}
           onChange={onIngredientChanged}
-        ></input>
-        <button type="button" onClick={onSubmitIngredient}>Add ingredient</button>
+          style={styles.TextInput}
+        ></TextInput>
+        <Button style={styles.buttonField} title="Add Ingredient" onPress={onSubmitIngredient} />
 
-        <label htmlFor="stepsInfo">Add Step:</label>
-        <input 
+        <Text htmlFor="stepsInfo" style={styles.title}>Add Step:</Text>
+        <TextInput
           type="text"
           id="stepsInfo"
           value={instruction}
           onChange={onInstructionChanged}
+          style={styles.TextInput}
           >
-        </input>
-        <button type="button" onClick={onSubmitInstruction}>Add Step</button>
-
+        </TextInput>
+        <Button style={styles.buttonField} title="Add Instruction" onPress={onSubmitInstruction} />
    
-        <button type="button" onClick={onSaveRecipeClicked}>Save Post</button>
-      </form>
-      <h3>Ingredients</h3>
+        <Button style={styles.buttonField} title="Save Post" type="button" onPress={onSaveRecipeClicked} disabled={((ingredients.length > 0) && (instructions.length) > 0) ? false : true} />
+      </View>
+      <Text style={styles.headerText}>Ingredients</Text>
       <ul>
         {
           ingredients.map((ingred) => (
@@ -141,7 +148,7 @@ export const AddRecipeForm = () => {
           ))  
         }
       </ul>
-      <h3>Instructions</h3>
+      <Text style={styles.headerText}>Instructions</Text>
       <ol>
         {
           instructions.map((instruction) => (
@@ -150,6 +157,34 @@ export const AddRecipeForm = () => {
         }
       </ol>
       
-    </section>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+    margin:20
+  },
+  headerText: {
+    fontSize:30,
+    fontWeight: 'bold',
+    margin:20
+  },
+  title: {
+    fontSize:15,
+    fontWeight:500
+  },
+  buttonField:{
+    margin: 20,
+    padding: 10
+  },
+  TextInput: {
+    backgroundColor:'white',
+    padding:10,
+    marginTop:20,
+    marginBottom:20,
+    color: 'grey'
+  }
+  
+});

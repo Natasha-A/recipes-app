@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Image, FlatList, Text, Button} from "react-native";
+import {Text, StyleSheet, View, TextInput, Button} from 'react-native';
 
 import { recipedUpdated, recipeDeleted } from "./recipeSlice";
 import { selectRecipeById } from "./recipeSlice";
@@ -13,6 +13,7 @@ export const EditRecipeForm = ({ navigation, route }) => {
   const [title, setTitle] = useState(recipe.title);
   const [time, setTime] = useState(recipe.time);
   const [servings, setServings] = useState(recipe.servings);
+  const [image, setImage] = useState(recipe.image);
   const [description, setDescription] = useState(recipe.description);
 
   const [ingredient, setIngredient] = useState('')
@@ -59,6 +60,7 @@ export const EditRecipeForm = ({ navigation, route }) => {
         title,
         time,
         servings,
+        image,
         description,
         ingredients,
         instructions,
@@ -78,63 +80,69 @@ export const EditRecipeForm = ({ navigation, route }) => {
      {
      recipeId ? 
      <View>
-     <form> 
-        <h2>Edit Recipe</h2>
-        <label htmlFor="recipeTitle">Recipe Title:</label>
-        <input
+     <View style={styles.container}> 
+        <Text style={styles.headerText}>Edit Recipe</Text>
+        <Text htmlFor="recipeTitle" style={styles.title}>Recipe Title:</Text>
+        <TextInput
           type="text"
           id="recipeTitle"
           value={title}
           onChange={onTitleChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="timeInfo">Time:</label>
-        <input
+        <Text htmlFor="timeInfo" style={styles.title}>Time:</Text>
+        <TextInput
           type="text"
           id="timeInfo"
           value={time}
           onChange={onTimeChanged}
-        ></input>
+          style={styles.TextInput}
+        ></TextInput>
 
-        <label htmlFor="servingsInfo">Servings:</label>
-        <input
+        <Text htmlFor="servingsInfo" style={styles.title}>Servings:</Text>
+        <TextInput
           type="text"
           id="servingsInfo"
           value={servings}
           onChange={onServingsChanged}
-        ></input>
+          style={styles.TextInput}
 
-        <label htmlFor="descriptionInfo">Description:</label>
-        <input
+        ></TextInput>
+
+        <Text style={styles.title} htmlFor="descriptionInfo">Description:</Text>
+        <TextInput
           type="text"
           id="descriptionInfo"
           value={description}
           onChange={onDescriptionChanged}
-        ></input>
+          style={styles.TextInput}
 
-        <label htmlFor="ingredientsInfo">Add Ingredient:</label>
-        <input
+        ></TextInput>
+
+        <Text style={styles.title} htmlFor="ingredientsInfo">Add Ingredient:</Text>
+        <TextInput
           type="text"
           id="ingredientsInfo"
           value={ingredient}
           onChange={onIngredientChanged}
-        ></input>
-        <button type="button" onClick={onSubmitIngredient}>
-          Add ingredient
-        </button>
+          style={styles.TextInput}
 
-        <label htmlFor="stepsInfo">Add Step:</label>
-        <input
+        ></TextInput>
+        <Button style={styles.title} title="Add ingredient" onPress={onSubmitIngredient}/>
+
+        <Text style={styles.title} htmlFor="stepsInfo">Add Step:</Text>
+        <TextInput
           type="text"
           id="stepsInfo"
           value={instruction}
           onChange={onInstructionChanged}
-        ></input>
-        <button type="button" onClick={onSubmitInstruction}>
-          Add Step
-        </button>
+          style={styles.TextInput}
+
+        ></TextInput>
+        <Button  title="Add Instruction" onPress={onSubmitInstruction} />
         <Button title="Save Recipe" onPress={onSaveRecipeClicked}/>
-      </form>
+      </View>
       
       <h3>Ingredients</h3>
       <ul>
@@ -146,15 +154,44 @@ export const EditRecipeForm = ({ navigation, route }) => {
       </ul>
 
       <h3>Instructions</h3>
-      <ul>
+      <ol>
       {
         instructions.map(instructions => (
           <li>{instructions.display_text}</li>
         ))
       }
-      </ul>
-      </View> : <View><Text>Recipe not found</Text></View>
+      </ol>
+
+    </View> : <View><Text>Recipe not found</Text></View>
     }
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+    margin:20
+  },
+  headerText: {
+    fontSize:30,
+    fontWeight: 'bold',
+    margin:20
+  },
+  title: {
+    fontSize:15,
+    fontWeight:500
+  },
+  buttonField:{
+    margin: 20,
+    padding: 10
+  },
+  TextInput: {
+    backgroundColor:'white',
+    padding:10,
+    marginTop:20,
+    marginBottom:20,
+    color: 'grey'
+  }
+  
+});
